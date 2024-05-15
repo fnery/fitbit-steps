@@ -1,0 +1,7 @@
+version: 2
+
+sources:
+  - name: fitbit_ingest
+    database: dlt-bq-test
+    tables:
+      - name: steps

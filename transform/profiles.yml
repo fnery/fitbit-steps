@@ -1,0 +1,25 @@
+fitbit_steps:
+  target: prod
+  outputs:
+    prod:
+      type: bigquery
+      method: service-account
+      keyfile: "{{ env_var('GCLOUD_SERVICE_ACCOUNT_KEY_FILE_PATH')}}"
+      project: dlt-bq-test
+      dataset: fitbit_transform
+      threads: 4
+      timeout_seconds: 300
+      location: US
+      priority: interactive
+      retries:
+    dev:
+      type: bigquery
+      method: service-account
+      keyfile: ../GCLOUD_SERVICE_ACCOUNT_KEY_FILE.json
+      project: dlt-bq-test
+      dataset: fitbit_transform
+      threads: 4
+      timeout_seconds: 300
+      location: US
+      priority: interactive
+      retries: 1
