@@ -12,5 +12,5 @@ select
     timestamp_trunc(current_timestamp(), second) as transformed_at,
 from {{ source('fitbit_ingest', 'steps') }}
 {% if is_incremental() %}
-    where date(date_time) >= (select max(day) from {{ this }})
+    where date(date_time) >= (select date_sub(max(day), interval 1 day) from {{ this }})
 {% endif %}
