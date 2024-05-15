@@ -1,0 +1,72 @@
+name: Run Fitbit steps pipeline
+
+on:
+  schedule:
+    - cron: '0 */2 * * *'
+  workflow_dispatch: null
+
+env:
+  GCLOUD_SERVICE_ACCOUNT_KEY_FILE: ${{ secrets.GCLOUD_SERVICE_ACCOUNT_KEY_FILE }}
+  DESTINATION__BIGQUERY__LOCATION: ${{ secrets.DESTINATION__BIGQUERY__LOCATION }}
+  FITBIT_ACCESS_TOKEN: ${{ secrets.FITBIT_ACCESS_TOKEN }}
+
+jobs:
+  maybe_skip:
+    runs-on: ubuntu-latest
+    outputs:
+      should_skip: ${{ steps.skip_check.outputs.should_skip }}
+    steps:
+      - id: skip_check
+        uses: fkirc/skip-duplicate-actions@v5
+        with:
+          concurrent_skipping: always
+          skip_after_successful_duplicate: 'false'
+          do_not_skip: '[]'
+
+  run_pipeline:
+    needs: maybe_skip
+    if: needs.maybe_skip.outputs.should_skip != 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+
+      - name: Create gcloud service account file and set its path to an environment variable
+        run: |
+          GCLOUD_SERVICE_ACCOUNT_KEY_FILE_PATH=$(pwd)/gcloud_service_account_key_file.json
+          echo "$GCLOUD_SERVICE_ACCOUNT_KEY_FILE" > $GCLOUD_SERVICE_ACCOUNT_KEY_FILE_PATH
+          echo "GCLOUD_SERVICE_ACCOUNT_KEY_FILE_PATH=$GCLOUD_SERVICE_ACCOUNT_KEY_FILE_PATH" >> $GITHUB_ENV
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.10.x
+
+      - name: Restore virtual environment from cache
+        uses: syphar/restore-virtualenv@v1
+        id: cache-virtualenv
+        with:
+          requirement_files: requirements.txt
+
+      - name: Restore pip download cache
+        uses: syphar/restore-pip-download-cache@v1
+        if: steps.cache-virtualenv.outputs.cache-hit != 'true'
+
+      - name: Install python dependencies
+        run: pip install -r requirements.txt
+        if: steps.cache-virtualenv.outputs.cache-hit != 'true'
+
+      - name: Extract data from Fitbit API and load to BigQuery
+        run: |
+          export GOOGLE_APPLICATION_CREDENTIALS=${{ env.GCLOUD_SERVICE_ACCOUNT_KEY_FILE_PATH }}
+          python 'ingest.py'
+        working-directory: ingest
+
+      - name: Compile dbt project
+        run: dbt compile --profiles-dir . --target prod
+        working-directory: transform
+
+      - name: Run dbt project
+        run: dbt run --profiles-dir . --target prod
+        working-directory: transform
+
