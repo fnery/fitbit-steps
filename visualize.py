@@ -84,6 +84,18 @@ with tab2:
 # Pipeline Details tab
 with tab3:
     st.header("Pipeline Details")
+
+    st.markdown(
+        """
+        <div style="background-color: #e7f3fe; padding: 10px; border-left: 6px solid #2196F3; color: black; margin-bottom: 20px;">
+            💻 Here's the <a href="https://github.com/fnery/fitbit-steps" target="_blank" style="color: #2196F3;">GitHub repo</a> including source code for this data app and the underlying pipeline. 
+            <br><br>
+            📝 Also, I wrote a blog post describing this project in detail. Check it out <a href="https://fnery.io/posts/end-to-end-de-fitbit-data/" target="_blank" style="color: #2196F3;">here</a>!
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
     st.write("This section provides details about the data pipeline used to extract, transform, and visualize the step data.")
 
     image = Image.open('diagram.png')
