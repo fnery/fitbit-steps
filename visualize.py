@@ -42,7 +42,7 @@ tab1, tab2, tab3 = st.tabs(["Overview", "Insights", "Pipeline Details"])
 # Overview tab
 with tab1:
     st.header("Overview")
-    st.write("This app visualizes step count data over time, collected from a Fitbit device.")
+    st.write("This app visualizes step count data over time, collected from a Fitbit device. This dashboard is live and gets fresh data from the Fitbit API every 2 hours!")
 
     st.write("### Key Metrics")
     st.write(f"**Total Days of Data:** {len(data)}")
