@@ -1,4 +1,3 @@
-import os
 import streamlit as st
 from google.oauth2 import service_account
 from google.cloud import bigquery
@@ -7,8 +6,11 @@ import streamlit as st
 from PIL import Image
 
 
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = './GCLOUD_SERVICE_ACCOUNT_KEY_FILE.json'
-client = bigquery.Client()
+# Authentication and BigQuery client setup
+credentials = service_account.Credentials.from_service_account_info(
+    st.secrets["gcp_service_account"]
+)
+client = bigquery.Client(credentials=credentials)
 
 # Cache data loading function
 @st.cache_data(ttl=600)
