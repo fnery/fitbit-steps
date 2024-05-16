@@ -11,7 +11,7 @@ This repository contains a simple end-to-end data engineering pipeline designed 
 
 ## Features
 
-![diagram](visualize/diagram.png)
+![diagram](diagram.png)
 
 - Data retrieval from the [Fitbit Web API](https://dev.fitbit.com/build/reference/web-api/)
 - Data loading using [dlt](https://dlthub.com/)

@@ -60,7 +60,6 @@ jobs:
         run: |
           export GOOGLE_APPLICATION_CREDENTIALS=${{ env.GCLOUD_SERVICE_ACCOUNT_KEY_FILE_PATH }}
           python 'ingest.py'
-        working-directory: ingest
 
       - name: Compile dbt project
         run: dbt compile --profiles-dir . --target prod

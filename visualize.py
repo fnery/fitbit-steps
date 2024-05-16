@@ -86,7 +86,7 @@ with tab3:
     st.header("Pipeline Details")
     st.write("This section provides details about the data pipeline used to extract, transform, and visualize the step data.")
 
-    image = Image.open('visualize/diagram.png')
+    image = Image.open('diagram.png')
     st.image(image, caption="Data Pipeline")
 
     st.write("""
