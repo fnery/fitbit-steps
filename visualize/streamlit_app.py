@@ -7,7 +7,7 @@ import streamlit as st
 from PIL import Image
 
 
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = '../GCLOUD_SERVICE_ACCOUNT_KEY_FILE.json'
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = './GCLOUD_SERVICE_ACCOUNT_KEY_FILE.json'
 client = bigquery.Client()
 
 # Cache data loading function
